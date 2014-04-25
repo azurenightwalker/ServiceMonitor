@@ -29,12 +29,6 @@ public class MainActivity extends DrawerActivity implements OnFragmentInteractio
                         new MenuOption(R.string.app_name, R.drawable.ic_launcher, new Callable<Fragment>() {
                             @Override
                             public Fragment call() throws Exception {
-                                return EmptyFragment.newInstance();
-                            }
-                        }),
-                        new MenuOption(R.string.hello_world, R.drawable.ic_launcher, new Callable<Fragment>() {
-                            @Override
-                            public Fragment call() throws Exception {
                                 return ServiceListFragment.newInstance();
                             }
                         })

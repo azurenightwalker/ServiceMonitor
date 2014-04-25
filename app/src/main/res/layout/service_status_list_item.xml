@@ -23,7 +23,7 @@
         android:ellipsize="end"
         android:singleLine="true"/>
     <TextView
-        android:id="@+id/service_group"
+        android:id="@+id/service_update"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="5dip"

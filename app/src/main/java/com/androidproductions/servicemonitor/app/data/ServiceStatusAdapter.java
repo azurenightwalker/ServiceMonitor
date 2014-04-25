@@ -10,7 +10,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.androidproductions.generic.lib.dates.DateFormatter;
 import com.androidproductions.servicemonitor.app.R;
+
+import java.util.Date;
 
 public class ServiceStatusAdapter extends CursorAdapter {
 
@@ -36,18 +39,18 @@ public class ServiceStatusAdapter extends CursorAdapter {
 
     private View populateView(Cursor cursor, View ret) {
         final TextView mName = (TextView) ret.findViewById(R.id.service_name);
-        final TextView mGroup = (TextView) ret.findViewById(R.id.service_group);
+        final TextView mUpd = (TextView) ret.findViewById(R.id.service_update);
         final ImageView mStat = (ImageView) ret.findViewById(R.id.service_status);
 
         final int nameIdx = cursor.getColumnIndexOrThrow(ServiceStatusContract.NAME);
-        final int desc = cursor.getColumnIndex(ServiceStatusContract.GROUP);
+        final int upd = cursor.getColumnIndex(ServiceStatusContract.LAST_UPDATE);
         final int stat = cursor.getColumnIndex(ServiceStatusContract.STATUS);
         final String name = cursor.getString(nameIdx);
-        final String description = cursor.getString(desc);
+        final Date lastUpdate = new Date(cursor.getLong(upd));
         final ServiceState status = ServiceState.parse(cursor.getInt(stat));
 
         mName.setText(name);
-        mGroup.setText(description);
+        mUpd.setText(DateFormatter.AsCuiDateTime(lastUpdate));
 
         int res = android.R.drawable.presence_invisible;
         switch(status)
