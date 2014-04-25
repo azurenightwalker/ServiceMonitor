@@ -19,5 +19,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.0.0'
+    compile ([group: 'com.google.api-client', name: 'google-api-client-android', version: '1.18.0-rc'])
+    compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.google.android.gms:play-services:4.3.23'
 }

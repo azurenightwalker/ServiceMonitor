@@ -1,4 +1,4 @@
-package com.androidproductions.servicemonitor.app;
+package com.androidproductions.servicemonitor.app.gcm;
 
 import android.app.Activity;
 import android.content.ComponentName;

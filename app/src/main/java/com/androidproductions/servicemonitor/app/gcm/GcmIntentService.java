@@ -1,4 +1,4 @@
-package com.androidproductions.servicemonitor.app;
+package com.androidproductions.servicemonitor.app.gcm;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
@@ -10,12 +10,13 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.androidproductions.servicemonitor.app.MainActivity;
+import com.androidproductions.servicemonitor.app.R;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class GcmIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
-    private NotificationManager mNotificationManager;
-    NotificationCompat.Builder builder;
+    NotificationManager mNotificationManager;
 
     public GcmIntentService() {
         super("GcmIntentService");
