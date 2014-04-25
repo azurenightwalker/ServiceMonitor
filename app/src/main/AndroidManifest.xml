@@ -37,6 +37,8 @@
             </intent-filter>
         </receiver>
         <service android:name=".gcm.GcmIntentService" />
+        <provider android:authorities="com.androidproductions.servicemonitor"
+            android:name=".data.ServiceStatusProvider"/>
     </application>
 
 </manifest>

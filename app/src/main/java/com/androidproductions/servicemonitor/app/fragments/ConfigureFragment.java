@@ -2,7 +2,6 @@ package com.androidproductions.servicemonitor.app.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.androidproductions.servicemonitor.app.R;
-import com.androidproductions.servicemonitor.app.data.ServiceStatusContract;
 import com.androidproductions.servicemonitor.backend.services.Services;
 import com.androidproductions.servicemonitor.backend.services.model.CollectionResponseServiceRecord;
 import com.androidproductions.servicemonitor.backend.services.model.ServiceRecord;
@@ -23,13 +21,13 @@ import java.io.IOException;
 /**
  * A simple {@link android.app.Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link com.androidproductions.servicemonitor.app.fragments.OnFragmentInteractionListener} interface
+ * {@link OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link com.androidproductions.servicemonitor.app.fragments.EmptyFragment#newInstance} factory method to
+ * Use the {@link com.androidproductions.servicemonitor.app.fragments.ConfigureFragment#newInstance} factory method to
  * create an instance of this fragment.
  *
  */
-public class EmptyFragment extends Fragment {
+public class ConfigureFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     /**
@@ -38,17 +36,18 @@ public class EmptyFragment extends Fragment {
      *
      * @return A new instance of fragment EmptyFragment.
      */
-    public static EmptyFragment newInstance() {
-        return new EmptyFragment();
+    public static ConfigureFragment newInstance() {
+        return new ConfigureFragment();
     }
-    public EmptyFragment() {
+    public ConfigureFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_empty, container, false);
+        View v = inflater.inflate(R.layout.fragment_configure, container, false);
+        return v;
     }
 
     @Override
