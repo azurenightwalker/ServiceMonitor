@@ -1,0 +1,10 @@
+C:\Users\scott.jones\Documents\ServiceMonitor\C#\ServiceRegistry\TestApp\bin\Debug\TestApp.exe.config
+C:\Users\scott.jones\Documents\ServiceMonitor\C#\ServiceRegistry\TestApp\bin\Debug\TestApp.exe
+C:\Users\scott.jones\Documents\ServiceMonitor\C#\ServiceRegistry\TestApp\bin\Debug\TestApp.pdb
+C:\Users\scott.jones\Documents\ServiceMonitor\C#\ServiceRegistry\TestApp\bin\Debug\ServiceRegistry.dll
+C:\Users\scott.jones\Documents\ServiceMonitor\C#\ServiceRegistry\TestApp\bin\Debug\Newtonsoft.Json.dll
+C:\Users\scott.jones\Documents\ServiceMonitor\C#\ServiceRegistry\TestApp\bin\Debug\ServiceRegistry.pdb
+C:\Users\scott.jones\Documents\ServiceMonitor\C#\ServiceRegistry\TestApp\bin\Debug\Newtonsoft.Json.xml
+C:\Users\scott.jones\Documents\ServiceMonitor\C#\ServiceRegistry\TestApp\obj\Debug\TestApp.csprojResolveAssemblyReference.cache
+C:\Users\scott.jones\Documents\ServiceMonitor\C#\ServiceRegistry\TestApp\obj\Debug\TestApp.exe
+C:\Users\scott.jones\Documents\ServiceMonitor\C#\ServiceRegistry\TestApp\obj\Debug\TestApp.pdb
