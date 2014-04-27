@@ -25,4 +25,21 @@ public enum ServiceState {
                 return null;
         }
     }
+
+    public int getResource() {
+        int res = android.R.drawable.presence_invisible;
+        switch(this)
+        {
+            case OK:
+                res = android.R.drawable.presence_online;
+                break;
+            case INACTIVE:
+                res = android.R.drawable.presence_away;
+                break;
+            case DOWN:
+                res = android.R.drawable.presence_busy;
+                break;
+        }
+        return res;
+    }
 }

@@ -1,5 +1,6 @@
 package com.androidproductions.servicemonitor.app.data;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.androidproductions.generic.lib.dates.DateFormatter;
 import com.androidproductions.servicemonitor.app.R;
+import com.androidproductions.servicemonitor.app.fragments.ServiceDetailsFragment;
 
 import java.util.Date;
 
@@ -27,6 +29,12 @@ public class ServiceStatusAdapter extends CursorAdapter {
         final RelativeLayout ret = (RelativeLayout) inflater.inflate(R.layout.service_status_list_item, parent, false);
         if (ret != null)
         {
+            ret.setTag(
+                    new ViewHolder(
+                            (TextView)ret.findViewById(R.id.service_name),
+                            (TextView)ret.findViewById(R.id.service_update),
+                            (ImageView)ret.findViewById(R.id.service_status)
+                    ));
             return populateView(cursor, ret);
         }
         return null;
@@ -38,36 +46,33 @@ public class ServiceStatusAdapter extends CursorAdapter {
     }
 
     private View populateView(Cursor cursor, View ret) {
-        final TextView mName = (TextView) ret.findViewById(R.id.service_name);
-        final TextView mUpd = (TextView) ret.findViewById(R.id.service_update);
-        final ImageView mStat = (ImageView) ret.findViewById(R.id.service_status);
+        ViewHolder vh = (ViewHolder) ret.getTag();
 
-        final int nameIdx = cursor.getColumnIndexOrThrow(ServiceStatusContract.NAME);
-        final int upd = cursor.getColumnIndex(ServiceStatusContract.LAST_UPDATE);
-        final int stat = cursor.getColumnIndex(ServiceStatusContract.STATUS);
-        final String name = cursor.getString(nameIdx);
-        final Date lastUpdate = new Date(cursor.getLong(upd));
-        final ServiceState status = ServiceState.parse(cursor.getInt(stat));
+        final String name = cursor.getString(
+                cursor.getColumnIndexOrThrow(ServiceStatusContract.NAME));
+        final Date lastUpdate = new Date(cursor.getLong(
+                cursor.getColumnIndexOrThrow(ServiceStatusContract.LAST_UPDATE)));
+        final ServiceState status = ServiceState.parse(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ServiceStatusContract.STATUS)));
 
-        mName.setText(name);
-        mUpd.setText(DateFormatter.AsCuiDateTime(lastUpdate));
+        vh.Name.setText(name);
+        vh.LastUpdate.setText(DateFormatter.AsCuiDateTime(lastUpdate));
 
-        int res = android.R.drawable.presence_invisible;
-        switch(status)
-        {
-            case OK:
-                res = android.R.drawable.presence_online;
-                break;
-            case INACTIVE:
-                res = android.R.drawable.presence_away;
-                break;
-            case DOWN:
-                res = android.R.drawable.presence_busy;
-                break;
-        }
-        mStat.setImageResource(res);
+        ((ImageView) vh.Status.findViewById(R.id.service_status))
+                .setImageResource(status.getResource());
         return ret;
     }
 
 
+    private class ViewHolder {
+        TextView Name;
+        TextView LastUpdate;
+        ImageView Status;
+
+        private ViewHolder(TextView name, TextView lastUpdate, ImageView status) {
+            Name = name;
+            LastUpdate = lastUpdate;
+            Status = status;
+        }
+    }
 }

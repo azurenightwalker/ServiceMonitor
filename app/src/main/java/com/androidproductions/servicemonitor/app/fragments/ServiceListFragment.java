@@ -1,6 +1,7 @@
 package com.androidproductions.servicemonitor.app.fragments;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -9,7 +10,9 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.CursorAdapter;
+import android.widget.ListView;
 
 import com.androidproductions.servicemonitor.app.data.ServiceStatusAdapter;
 import com.androidproductions.servicemonitor.app.data.ServiceStatusContract;
@@ -83,5 +86,10 @@ public class ServiceListFragment extends ListFragment implements LoaderManager.L
             mAdapter.swapCursor(null);
         else
             Log.v("SM","OnLoadFinished: mAdapter is null");
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        ServiceDetailsFragment.newInstance(id).show(getFragmentManager(), "Dialog");
     }
 }

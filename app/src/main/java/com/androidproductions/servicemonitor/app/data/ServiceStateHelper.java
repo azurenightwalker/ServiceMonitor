@@ -1,7 +1,9 @@
 package com.androidproductions.servicemonitor.app.data;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.AsyncTask;
 
 import com.androidproductions.servicemonitor.app.gcm.GCMMessage;
@@ -42,6 +44,20 @@ public final class ServiceStateHelper {
                 }
             }
         }.execute(null, null, null);
+    }
+
+    public static ServiceStatus getServiceStatus(Context context, long id)
+    {
+        ServiceStatus ss = null;
+        Cursor query = context.getContentResolver()
+                .query(ContentUris.withAppendedId(ServiceStatusContract.CONTENT_URI, id)
+                        , null, null, null, null);
+        if (query != null) {
+            if (query.moveToFirst())
+                ss = new ServiceStatus(query);
+            query.close();
+        }
+        return ss;
     }
 
     private static ContentValues AsContentValues(GCMMessage msg)
