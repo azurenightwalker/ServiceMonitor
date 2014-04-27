@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.androidproductions.generic.lib.drawer.DrawerActivity;
 import com.androidproductions.generic.lib.drawer.MenuOption;
+import com.androidproductions.servicemonitor.app.data.ServiceStateHelper;
 import com.androidproductions.servicemonitor.app.data.ServiceStatusContract;
 import com.androidproductions.servicemonitor.app.fragments.*;
 import com.androidproductions.servicemonitor.app.gcm.GCMUtils;
@@ -40,7 +41,7 @@ public class MainActivity extends DrawerActivity implements OnFragmentInteractio
         super.onCreate(savedInstanceState);
         GCMUtils gcm = new GCMUtils(this);
         gcm.Initialize();
-        getServices();
+        ServiceStateHelper.refreshServiceStates(this);
     }
 
     @Override
@@ -49,38 +50,5 @@ public class MainActivity extends DrawerActivity implements OnFragmentInteractio
         removeFragment();
     }
 
-    private void getServices() {
-        new AsyncTask<Void, Void, CollectionResponseServiceRecord>() {
-            @Override
-            protected CollectionResponseServiceRecord doInBackground(Void... params) {
-                Services.Builder builder = new Services.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
-                try {
-                    return builder.build().listServices("test").execute();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
 
-            @Override
-            protected void onPostExecute(CollectionResponseServiceRecord msg) {
-
-                for (ServiceRecord srv : msg.getItems())
-                {
-                    getContentResolver().insert(ServiceStatusContract.CONTENT_URI,AsContentValues(srv));
-                    Toast.makeText(getApplicationContext(), srv.getServiceId() + srv.getStatus(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        }.execute(null, null, null);
-    }
-
-    private static ContentValues AsContentValues(ServiceRecord srv)
-    {
-        ContentValues cv = new ContentValues();
-        cv.put(ServiceStatusContract.NAME, srv.getServiceId());
-        cv.put(ServiceStatusContract.GROUP, srv.getServiceGroup());
-        cv.put(ServiceStatusContract.STATUS, srv.getStatus());
-        cv.put(ServiceStatusContract.LAST_UPDATE, srv.getLastUpdate());
-        return cv;
-    }
 }

@@ -5,5 +5,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="statusIndicator">Status Indicator</string>
+    <string name="statusFormatString">%s is %s as of %s</string>
+    <string name="DOWN">DOWN</string>
+    <string name="BACK_UP">BACK UP</string>
+    <string name="CURRENTLY_INACTIVE">CURRENTLY INACTIVE</string>
 
 </resources>
