@@ -60,6 +60,20 @@ public final class ServiceStateHelper {
         return ss;
     }
 
+    public static ServiceStatus getServiceStatus(Context context, String name)
+    {
+        ServiceStatus ss = null;
+        Cursor query = context.getContentResolver()
+                .query(ServiceStatusContract.CONTENT_URI
+                        , null, ServiceStatusContract.NAME + " = ?", new String[] { name }, null);
+        if (query != null) {
+            if (query.moveToFirst())
+                ss = new ServiceStatus(query);
+            query.close();
+        }
+        return ss;
+    }
+
     private static ContentValues AsContentValues(GCMMessage msg)
     {
         ContentValues cv = new ContentValues();

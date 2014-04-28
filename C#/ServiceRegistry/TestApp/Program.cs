@@ -11,9 +11,11 @@ namespace TestApp
     {
         static void Main(string[] args)
         {
+            ServiceStatus.RegisterService("test","test");
             ServiceStatus.RegisterService("test2","test");
-            ServiceStatus.UpdateStatus("test","test",2);
-            ServiceStatus.UpdateStatus("test2","test",2);
+            ServiceStatus.RegisterService("test3","test");
+            ServiceStatus.UpdateStatus("test","test",4);
+            ServiceStatus.UpdateStatus("test2","test",1);
         }
     }
 }

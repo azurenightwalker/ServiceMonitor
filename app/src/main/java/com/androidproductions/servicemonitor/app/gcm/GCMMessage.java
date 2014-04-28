@@ -37,8 +37,8 @@ public class GCMMessage {
     public GCMMessage(Bundle extras, Context context) {
         serviceId = extras.getString("serviceId");
         serviceGroup = extras.getString("serviceGroup");
-        status = extras.getInt("status");
-        time = extras.getInt("time");
+        status = Integer.parseInt(extras.getString("status"));
+        time = Long.parseLong(extras.getString("time"));
         _context = context;
     }
 

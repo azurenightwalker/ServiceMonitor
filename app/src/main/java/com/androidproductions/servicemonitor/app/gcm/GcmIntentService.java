@@ -10,6 +10,7 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.androidproductions.servicemonitor.app.DetailsActivity;
 import com.androidproductions.servicemonitor.app.MainActivity;
 import com.androidproductions.servicemonitor.app.R;
 import com.androidproductions.servicemonitor.app.data.ServiceStateHelper;
@@ -58,8 +59,11 @@ public class GcmIntentService extends IntentService {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        Intent detailsIntent = new Intent(this, DetailsActivity.class);
+        detailsIntent.putExtra(DetailsActivity.ServiceKey,msg.getServiceId());
+
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
+                detailsIntent, 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

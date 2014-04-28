@@ -19,10 +19,21 @@ public class ServiceRecord {
     @Index
     private String serviceGroup;
 
-    private int Status;
+    private int status;
 
     private long lastUpdate;
-    // you can add more fields...
+
+    public String getClaimant() {
+        return Claimant;
+    }
+
+    public boolean isAlerted() {
+        return Alerted;
+    }
+
+    private String Claimant;
+
+    private boolean Alerted;
 
     public ServiceRecord() {}
 
@@ -35,11 +46,11 @@ public class ServiceRecord {
     }
 
     public int getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(int status) {
-        Status = status;
+        this.status = status;
         lastUpdate = new Date().getTime();
     }
 
@@ -53,5 +64,13 @@ public class ServiceRecord {
 
     public void setServiceGroup(String serviceGroup) {
         this.serviceGroup = serviceGroup;
+    }
+
+    public void setAlerted(boolean alerted) {
+        Alerted = alerted;
+    }
+
+    public void setClaimant(String claimant) {
+        Claimant = claimant;
     }
 }

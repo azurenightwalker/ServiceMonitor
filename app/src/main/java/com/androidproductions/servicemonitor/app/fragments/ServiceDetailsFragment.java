@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ public class ServiceDetailsFragment extends DialogFragment {
     private OnFragmentInteractionListener mListener;
     private long _id;
     private ServiceStatus _data;
+    private String _name;
 
     /**
      * Use this factory method to create a new instance of
@@ -42,6 +44,14 @@ public class ServiceDetailsFragment extends DialogFragment {
     public static ServiceDetailsFragment newInstance(long serviceId) {
         Bundle args = new Bundle();
         args.putLong("id", serviceId);
+        ServiceDetailsFragment frag = new ServiceDetailsFragment();
+        frag.setArguments(args);
+        return frag;
+    }
+
+    public static ServiceDetailsFragment newInstance(String serviceName) {
+        Bundle args = new Bundle();
+        args.putString("name", serviceName);
         ServiceDetailsFragment frag = new ServiceDetailsFragment();
         frag.setArguments(args);
         return frag;
@@ -70,9 +80,14 @@ public class ServiceDetailsFragment extends DialogFragment {
                     }
                 }
         );
-        if (getArguments() != null)
-            _id = getArguments().getLong("id");
-        _data = ServiceStateHelper.getServiceStatus(getActivity(),_id);
+        if (getArguments() != null) {
+            _id = getArguments().getLong("id", 0);
+            _name = getArguments().getString("name", "");
+        }
+        if (_id > 0)
+            _data = ServiceStateHelper.getServiceStatus(getActivity(),_id);
+        else
+            _data = ServiceStateHelper.getServiceStatus(getActivity(),_name);
         refreshView(view);
         return view;
     }
@@ -126,5 +141,11 @@ public class ServiceDetailsFragment extends DialogFragment {
     private void releaseIssue()
     {
 
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        mListener.CloseFragment();
     }
 }

@@ -28,6 +28,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.androidproductions.servicemonitor.app.DetailsActivity"
+            android:theme="@style/InvisibleTheme" />
+
         <receiver
             android:name=".gcm.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
