@@ -11,5 +11,6 @@
     <string name="CURRENTLY_INACTIVE">CURRENTLY INACTIVE</string>
     <string name="updateStatus">Update Status</string>
     <string name="claimIssue">Claim Issue</string>
+    <string name="notificationHeader">%1$s is %2$s</string>
 
 </resources>

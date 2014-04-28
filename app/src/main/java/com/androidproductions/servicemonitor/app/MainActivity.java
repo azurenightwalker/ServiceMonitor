@@ -1,24 +1,16 @@
 package com.androidproductions.servicemonitor.app;
 
+import android.accounts.AccountManager;
 import android.app.Fragment;
-import android.content.ContentValues;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.androidproductions.generic.lib.drawer.DrawerActivity;
 import com.androidproductions.generic.lib.drawer.MenuOption;
 import com.androidproductions.servicemonitor.app.data.ServiceStateHelper;
-import com.androidproductions.servicemonitor.app.data.ServiceStatusContract;
 import com.androidproductions.servicemonitor.app.fragments.*;
 import com.androidproductions.servicemonitor.app.gcm.GCMUtils;
-import com.androidproductions.servicemonitor.backend.services.Services;
-import com.androidproductions.servicemonitor.backend.services.model.CollectionResponseServiceRecord;
-import com.androidproductions.servicemonitor.backend.services.model.ServiceRecord;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
-import java.io.IOException;
 import java.util.concurrent.Callable;
 
 
@@ -41,7 +33,8 @@ public class MainActivity extends DrawerActivity implements OnFragmentInteractio
         super.onCreate(savedInstanceState);
         GCMUtils gcm = new GCMUtils(this);
         gcm.Initialize();
-        ServiceStateHelper.refreshServiceStates(this);
+        if (Credentials.Get(this).isSignedIn())
+            ServiceStateHelper.refreshServiceStates(this, Credentials.Get().Account);
     }
 
     @Override
@@ -50,5 +43,18 @@ public class MainActivity extends DrawerActivity implements OnFragmentInteractio
         removeFragment();
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case Credentials.REQUEST_ACCOUNT_PICKER:
+                if (data != null && data.getExtras() != null) {
+                    Credentials.Get().signIn(data.getExtras().getString(
+                                    AccountManager.KEY_ACCOUNT_NAME));
+                    ServiceStateHelper.refreshServiceStates(this, Credentials.Get().Account);
+                }
+                break;
+        }
+    }
 }

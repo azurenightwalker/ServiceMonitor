@@ -12,6 +12,7 @@ import com.androidproductions.servicemonitor.backend.services.model.CollectionRe
 import com.androidproductions.servicemonitor.backend.services.model.ServiceRecord;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 
 import java.io.IOException;
 
@@ -22,11 +23,12 @@ public final class ServiceStateHelper {
                 .insert(ServiceStatusContract.CONTENT_URI,AsContentValues(msg));
     }
 
-    public static void refreshServiceStates(final Context context) {
+    public static void refreshServiceStates(final Context context, final GoogleAccountCredential credential) {
         new AsyncTask<Void, Void, CollectionResponseServiceRecord>() {
             @Override
             protected CollectionResponseServiceRecord doInBackground(Void... params) {
-                Services.Builder builder = new Services.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
+                Services.Builder builder = new Services.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), credential);
+                builder.setApplicationName("ServiceMonitor");
                 try {
                     return builder.build().listServices("test").execute();
                 } catch (IOException e) {

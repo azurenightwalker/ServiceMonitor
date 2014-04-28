@@ -21,9 +21,14 @@ import static com.androidproductions.servicemonitor.backend.OfyService.ofy;
         namespace = @ApiNamespace(
                 ownerDomain = "backend.servicemonitor.androidproductions.com",
                 ownerName = "backend.servicemonitor.androidproductions.com",
-                packagePath="")/*,
-        clientIds = {Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID},
-        audiences = {Constants.ANDROID_AUDIENCE}*/
+                packagePath=""),
+        clientIds = {
+                Constants.WEB_CLIENT_ID,
+                Constants.ANDROID_CLIENT_ID,
+                Constants.IOS_CLIENT_ID,
+                com.google.api.server.spi.Constant.API_EXPLORER_CLIENT_ID},
+        audiences = {Constants.ANDROID_AUDIENCE},
+        scopes = {Constants.EMAIL_SCOPE}
 )
 public class ServiceStateEndpoint {
 
@@ -38,8 +43,8 @@ public class ServiceStateEndpoint {
      */
     @ApiMethod(name = "register", path = "services/{group}", httpMethod = "POST")
     public void registerService(@Named("group") String group, ServiceRecord rec, User user) throws OAuthRequestException {
-        /*if (user == null)
-            throw new OAuthRequestException("User unauthorized");*/
+        if (user == null)
+            throw new OAuthRequestException("User unauthorized");
         if(findRecord(rec.getServiceId(), group) != null) {
             log.info("Service " + rec.getServiceId() + " already registered, skipping register");
             return;
@@ -55,8 +60,8 @@ public class ServiceStateEndpoint {
      */
     @ApiMethod(name = "update", path = "services/{srvGroup}/{srvId}", httpMethod = "PUT")
     public void updateService(@Named("srvId") String srvId, @Named("srvGroup") String srvGroup, ServiceRecord rec, User user) throws OAuthRequestException {
-        /*if (user == null)
-            throw new OAuthRequestException("User unauthorized");*/
+        if (user == null)
+            throw new OAuthRequestException("User unauthorized");
 
         if(findRecord(srvId,srvGroup) == null) {
             log.info("Service " + srvId + " not registered, skipping update");
@@ -102,8 +107,8 @@ public class ServiceStateEndpoint {
      */
     @ApiMethod(name = "unregister", httpMethod = "DELETE", path = "services/{serviceGroup}/{serviceId}")
     public void unregisterService(@Named("serviceGroup") String serviceGroup, @Named("serviceId") String serviceId, User user) throws OAuthRequestException {
-        /*if (user == null)
-            throw new OAuthRequestException("User unauthorized");*/
+        if (user == null)
+            throw new OAuthRequestException("User unauthorized");
 
         ServiceRecord record = findRecord(serviceId,serviceGroup);
         if(record == null) {
@@ -121,8 +126,8 @@ public class ServiceStateEndpoint {
      */
     @ApiMethod(name = "listServices")
     public CollectionResponse<ServiceRecord> listServices(@Named("serviceGroup") String serviceGroup, User user) throws OAuthRequestException {
-        /*if (user == null)
-            throw new OAuthRequestException("User unauthorized");*/
+        if (user == null)
+            throw new OAuthRequestException("User unauthorized");
 
         List<ServiceRecord> records = ofy().transactionless().load().type(ServiceRecord.class)
                 .filter("serviceGroup", serviceGroup).list();

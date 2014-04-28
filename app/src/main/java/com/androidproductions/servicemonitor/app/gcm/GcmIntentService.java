@@ -6,13 +6,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.androidproductions.servicemonitor.app.DetailsActivity;
-import com.androidproductions.servicemonitor.app.MainActivity;
 import com.androidproductions.servicemonitor.app.R;
+import com.androidproductions.servicemonitor.app.data.ServiceState;
 import com.androidproductions.servicemonitor.app.data.ServiceStateHelper;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -61,6 +60,7 @@ public class GcmIntentService extends IntentService {
 
         Intent detailsIntent = new Intent(this, DetailsActivity.class);
         detailsIntent.putExtra(DetailsActivity.ServiceKey,msg.getServiceId());
+        detailsIntent.setFlags(detailsIntent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 detailsIntent, 0);
@@ -68,7 +68,8 @@ public class GcmIntentService extends IntentService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("GCM Notification")
+                        .setContentTitle(String.format(getString(R.string.notificationHeader),
+                                msg.getServiceId(), ServiceState.parse(msg.getStatus())))
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg.toString()))
                         .setContentText(msg.toString());
