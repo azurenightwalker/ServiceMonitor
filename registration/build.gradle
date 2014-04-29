@@ -4,7 +4,7 @@ apply plugin: 'maven'
 
 group = 'com.androidproductions.servicemonitor.backend'
 archivesBaseName = 'registration'
-version = 'v1-1.18.0-rc-SNAPSHOT'
+version = 'v1.1-1.18.0-rc-SNAPSHOT'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6

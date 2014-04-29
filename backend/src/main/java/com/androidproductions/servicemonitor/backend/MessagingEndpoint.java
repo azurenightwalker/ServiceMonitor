@@ -1,30 +1,36 @@
 package com.androidproductions.servicemonitor.backend;
 
-import com.google.android.gcm.server.Constants;
 import com.google.android.gcm.server.Message;
-import com.google.android.gcm.server.Result;
-import com.google.android.gcm.server.Sender;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.google.appengine.api.oauth.OAuthRequestException;
+import com.google.appengine.api.users.User;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Logger;
 import javax.inject.Named;
-
-import static com.androidproductions.servicemonitor.backend.OfyService.ofy;
 
 /**
  * An endpoint to send messages to devices registered with the backend
  *
  * For more information, see
  * https://developers.google.com/appengine/docs/java/endpoints/
- *
- * NOTE: This endpoint does not use any form of authorization or
- * authentication! If this app is deployed, anyone can access this endpoint! If
- * you'd like to add authentication, take a look at the documentation.
  */
-@Api(name = "messaging", version = "v1", namespace = @ApiNamespace(ownerDomain = "backend.servicemonitor.androidproductions.com", ownerName = "backend.servicemonitor.androidproductions.com", packagePath=""))
+@Api(
+        name = "messaging",
+        version = "v1.1",
+        namespace = @ApiNamespace(
+                ownerDomain = "backend.servicemonitor.androidproductions.com",
+                ownerName = "backend.servicemonitor.androidproductions.com",
+                packagePath=""),
+        clientIds = {
+                com.androidproductions.servicemonitor.backend.Constants.WEB_CLIENT_ID,
+                com.androidproductions.servicemonitor.backend.Constants.ANDROID_CLIENT_ID,
+                com.androidproductions.servicemonitor.backend.Constants.IOS_CLIENT_ID,
+                com.google.api.server.spi.Constant.API_EXPLORER_CLIENT_ID},
+        audiences = {com.androidproductions.servicemonitor.backend.Constants.ANDROID_AUDIENCE},
+        scopes = {com.androidproductions.servicemonitor.backend.Constants.EMAIL_SCOPE}
+)
 public class MessagingEndpoint {
     private static final Logger log = Logger.getLogger(MessagingEndpoint.class.getName());
 
@@ -33,7 +39,9 @@ public class MessagingEndpoint {
      *
      * @param message The message to send
      */
-    public void sendMessage(@Named("message") String message) throws IOException {
+    public void sendMessage(@Named("message") String message, User user) throws IOException, OAuthRequestException {
+        if (user == null)
+            throw new OAuthRequestException("User unauthorized");
         if(message == null || message.trim().length() == 0) {
             log.warning("Not sending message because it is empty");
             return;

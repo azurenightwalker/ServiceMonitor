@@ -15,6 +15,16 @@ public class RegistrationRecord {
     private String regId;
     // you can add more fields...
 
+    public String getUser() {
+        return User;
+    }
+
+    public void setUser(String user) {
+        User = user;
+    }
+
+    private String User;
+
     public RegistrationRecord() {}
 
     public String getRegId() {

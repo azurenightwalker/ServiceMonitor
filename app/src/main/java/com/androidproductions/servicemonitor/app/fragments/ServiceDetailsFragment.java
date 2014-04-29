@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidproductions.generic.lib.dates.DateFormatter;
 import com.androidproductions.servicemonitor.app.R;
+import com.androidproductions.servicemonitor.app.data.ServiceState;
 import com.androidproductions.servicemonitor.app.data.ServiceStateHelper;
 import com.androidproductions.servicemonitor.app.data.ServiceStatus;
 
@@ -117,6 +119,9 @@ public class ServiceDetailsFragment extends DialogFragment {
                 DateFormatter.AsCuiDateTime(new Date(_data.getLastUpdate())));
         ((ImageView) view.findViewById(R.id.service_status))
                 .setImageResource(_data.getStatus().getResource());
+
+        if (_data.getStatus() == ServiceState.DOWN)
+            view.findViewById(R.id.claimIssue).setEnabled(true);
     }
 
     @Override
@@ -135,7 +140,7 @@ public class ServiceDetailsFragment extends DialogFragment {
 
     private void claimIssue()
     {
-
+        ServiceStateHelper.claimServiceState(getActivity(),_data.getId());
     }
 
     private void releaseIssue()

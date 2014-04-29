@@ -1,6 +1,7 @@
 package com.androidproductions.servicemonitor.app.data;
 
 public enum ServiceState {
+    UNKNOWN(0),
     OK(1),
     INACTIVE(1<<1),
     DOWN(1<<2);
@@ -22,7 +23,7 @@ public enum ServiceState {
             case 1<<2:
                 return ServiceState.DOWN;
             default:
-                return null;
+                return ServiceState.UNKNOWN;
         }
     }
 

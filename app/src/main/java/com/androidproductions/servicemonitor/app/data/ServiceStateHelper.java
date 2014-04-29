@@ -52,6 +52,30 @@ public final class ServiceStateHelper {
         }.execute(null, null, null);
     }
 
+    public static void claimServiceState(final Context context, final long id) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                Services.Builder builder = new Services.Builder(
+                        AndroidHttp.newCompatibleTransport(),
+                        new AndroidJsonFactory(),
+                        GoogleCredentials.Instance.getAccount());
+                builder.setApplicationName("ServiceMonitor");
+                try {
+                    ServiceStatus ss = getServiceStatus(context, id);
+                    ServiceRecord sr = new ServiceRecord();
+                    sr.setClaimant(GoogleCredentials.Instance.getAccount().getSelectedAccountName());
+                    sr.setStatus(ss.getStatus().Value);
+                    sr.setAlerted(true);
+                    builder.build().update(ss.getGroup(), ss.getName(),sr).execute();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute(null, null, null);
+    }
+
     public static ServiceStatus getServiceStatus(Context context, long id)
     {
         ServiceStatus ss = null;
