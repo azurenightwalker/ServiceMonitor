@@ -117,41 +117,28 @@ public abstract class GCMUtils {
      * shared preferences.
      */
     private void registerInBackground() {
-        new AsyncTask<Void,Void,String>() {
+        new AsyncTask<Void,Void,Void>() {
             @Override
-            protected String doInBackground(Void... params) {
-                String msg;
-                try {
-                    if (gcm == null) {
-                        gcm = GoogleCloudMessaging.getInstance(_context);
+            protected Void doInBackground(Void... params) {
+                for (int i = 0; i < 5; i++) {
+                    try {
+                        if (gcm == null) {
+                            gcm = GoogleCloudMessaging.getInstance(_context);
+                        }
+                        registrationId = gcm.register(getSenderId());
+                        sendRegistrationIdToBackend(registrationId);
+                        storeRegistrationId(registrationId);
+                    } catch (IOException ex) {
+                        try {
+                            Thread.sleep(1000*2^i);
+                        } catch (InterruptedException e) {
+                        }
                     }
-                    registrationId = gcm.register(getSenderId());
-                    msg = "Device registered, registration ID=" + registrationId;
-
-                    // You should send the registration ID to your server over HTTP,
-                    // so it can use GCM/HTTP or CCS to send messages to your app.
-                    // The request to your server should be authenticated if your app
-                    // is using accounts.
-                    sendRegistrationIdToBackend(registrationId);
-
-                    // For this demo: we don't need to send it because the device
-                    // will send upstream messages to a server that echo back the
-                    // message using the 'from' address in the message.
-
-                    // Persist the regID - no need to register again.
-                    storeRegistrationId(registrationId);
-                } catch (IOException ex) {
-                    msg = "Error :" + ex.getMessage();
-                    // If there is an error, don't just keep trying to register.
-                    // Require the user to click a button again, or perform
-                    // exponential back-off.
+                    if (!registrationId.isEmpty())
+                        break;
+                    if (isCancelled()) break;
                 }
-                return msg;
-            }
-
-            @Override
-            protected void onPostExecute(String msg) {
-                Toast.makeText(_context, msg, Toast.LENGTH_SHORT).show();
+                return null;
             }
         }.execute(null, null, null);
     }

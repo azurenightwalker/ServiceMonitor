@@ -2,6 +2,7 @@ package com.androidproductions.servicemonitor.app.gcm;
 
 import android.app.Activity;
 
+import com.androidproductions.generic.lib.auth.GoogleCredentials;
 import com.androidproductions.servicemonitor.app.MainActivity;
 import com.androidproductions.servicemonitor.backend.registration.Registration;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -18,7 +19,10 @@ public class GCMUtils extends com.androidproductions.generic.lib.gcm.GCMUtils {
 
     @Override
     protected void sendRegistrationIdToBackend(String regId) {
-        Registration.Builder builder = new Registration.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
+        Registration.Builder builder = new Registration.Builder(
+                AndroidHttp.newCompatibleTransport(),
+                new AndroidJsonFactory(),
+                GoogleCredentials.Instance.getAccount());
         Registration service = builder.build();
         try {
             service.register(regId).execute();

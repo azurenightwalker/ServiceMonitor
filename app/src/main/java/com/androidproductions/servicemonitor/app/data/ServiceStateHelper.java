@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 
+import com.androidproductions.generic.lib.auth.GoogleCredentials;
 import com.androidproductions.servicemonitor.app.gcm.GCMMessage;
 import com.androidproductions.servicemonitor.backend.services.Services;
 import com.androidproductions.servicemonitor.backend.services.model.CollectionResponseServiceRecord;
@@ -23,11 +24,14 @@ public final class ServiceStateHelper {
                 .insert(ServiceStatusContract.CONTENT_URI,AsContentValues(msg));
     }
 
-    public static void refreshServiceStates(final Context context, final GoogleAccountCredential credential) {
+    public static void refreshServiceStates(final Context context) {
         new AsyncTask<Void, Void, CollectionResponseServiceRecord>() {
             @Override
             protected CollectionResponseServiceRecord doInBackground(Void... params) {
-                Services.Builder builder = new Services.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), credential);
+                Services.Builder builder = new Services.Builder(
+                        AndroidHttp.newCompatibleTransport(),
+                        new AndroidJsonFactory(),
+                        GoogleCredentials.Instance.getAccount());
                 builder.setApplicationName("ServiceMonitor");
                 try {
                     return builder.build().listServices("test").execute();

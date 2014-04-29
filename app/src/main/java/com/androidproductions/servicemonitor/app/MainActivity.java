@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.androidproductions.generic.lib.auth.GoogleCredentials;
 import com.androidproductions.generic.lib.drawer.DrawerActivity;
 import com.androidproductions.generic.lib.drawer.MenuOption;
 import com.androidproductions.servicemonitor.app.data.ServiceStateHelper;
@@ -12,7 +13,6 @@ import com.androidproductions.servicemonitor.app.fragments.*;
 import com.androidproductions.servicemonitor.app.gcm.GCMUtils;
 
 import java.util.concurrent.Callable;
-
 
 public class MainActivity extends DrawerActivity implements OnFragmentInteractionListener{
     public MainActivity() {
@@ -25,16 +25,18 @@ public class MainActivity extends DrawerActivity implements OnFragmentInteractio
                                 return ServiceListFragment.newInstance();
                             }
                         })
-                });
+                }
+        );
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GCMUtils gcm = new GCMUtils(this);
-        gcm.Initialize();
-        if (Credentials.Get(this).isSignedIn())
-            ServiceStateHelper.refreshServiceStates(this, Credentials.Get().Account);
+        GoogleCredentials.Instance.Init(getBaseContext());
+        if (GoogleCredentials.Instance.isSignedIn())
+            InitializeConnections();
+        else
+            GoogleCredentials.Instance.chooseAccount(this);
     }
 
     @Override
@@ -48,13 +50,20 @@ public class MainActivity extends DrawerActivity implements OnFragmentInteractio
                                     Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case Credentials.REQUEST_ACCOUNT_PICKER:
+            case GoogleCredentials.REQUEST_ACCOUNT_PICKER:
                 if (data != null && data.getExtras() != null) {
-                    Credentials.Get().signIn(data.getExtras().getString(
-                                    AccountManager.KEY_ACCOUNT_NAME));
-                    ServiceStateHelper.refreshServiceStates(this, Credentials.Get().Account);
+                    GoogleCredentials.Instance.signIn(data.getExtras().getString(
+                            AccountManager.KEY_ACCOUNT_NAME));
+                    InitializeConnections();
                 }
                 break;
         }
+    }
+
+    private void InitializeConnections()
+    {
+        ServiceStateHelper.refreshServiceStates(this);
+        GCMUtils gcm = new GCMUtils(this);
+        gcm.Initialize();
     }
 }
