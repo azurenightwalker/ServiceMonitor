@@ -10,7 +10,9 @@
     <string name="BACK_UP">BACK UP</string>
     <string name="CURRENTLY_INACTIVE">CURRENTLY INACTIVE</string>
     <string name="updateStatus">Update Status</string>
+    <string name="updating">Updating…</string>
     <string name="claimIssue">Claim Issue</string>
     <string name="notificationHeader">%1$s is %2$s</string>
+    <string name="releaseIssue">Release issue</string>
 
 </resources>

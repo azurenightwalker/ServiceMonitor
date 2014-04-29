@@ -16,6 +16,7 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 public final class ServiceStateHelper {
     public static void saveStatusFromMessage(Context context, GCMMessage msg)
@@ -47,6 +48,37 @@ public final class ServiceStateHelper {
                 {
                     context.getContentResolver()
                             .insert(ServiceStatusContract.CONTENT_URI,AsContentValues(srv));
+                }
+            }
+        }.execute(null, null, null);
+    }
+
+    public static void refreshServiceState(final Context context, final long id, final Callable<Void> callback) {
+        new AsyncTask<Void, Void, ServiceRecord>() {
+            @Override
+            protected ServiceRecord doInBackground(Void... params) {
+                Services.Builder builder = new Services.Builder(
+                        AndroidHttp.newCompatibleTransport(),
+                        new AndroidJsonFactory(),
+                        GoogleCredentials.Instance.getAccount());
+                builder.setApplicationName("ServiceMonitor");
+                try {
+                    ServiceStatus ss = getServiceStatus(context, id);
+                    return builder.build().get(ss.getGroup(), ss.getName()).execute();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(ServiceRecord srv) {
+                context.getContentResolver()
+                        .insert(ServiceStatusContract.CONTENT_URI, AsContentValues(srv));
+                try {
+                    callback.call();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }.execute(null, null, null);
@@ -88,6 +120,30 @@ public final class ServiceStateHelper {
             query.close();
         }
         return ss;
+    }
+
+    public static void releaseServiceState(final Context context, final long id) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                Services.Builder builder = new Services.Builder(
+                        AndroidHttp.newCompatibleTransport(),
+                        new AndroidJsonFactory(),
+                        GoogleCredentials.Instance.getAccount());
+                builder.setApplicationName("ServiceMonitor");
+                try {
+                    ServiceStatus ss = getServiceStatus(context, id);
+                    ServiceRecord sr = new ServiceRecord();
+                    sr.setClaimant(null);
+                    sr.setStatus(ss.getStatus().Value);
+                    sr.setAlerted(true);
+                    builder.build().update(ss.getGroup(), ss.getName(),sr).execute();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute(null, null, null);
     }
 
     public static ServiceStatus getServiceStatus(Context context, String name)

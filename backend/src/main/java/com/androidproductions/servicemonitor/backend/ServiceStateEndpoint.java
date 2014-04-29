@@ -17,7 +17,7 @@ import javax.inject.Named;
 import static com.androidproductions.servicemonitor.backend.OfyService.ofy;
 
 @Api(name = "services",
-        version = "v1.3",
+        version = "v1.4",
         namespace = @ApiNamespace(
                 ownerDomain = "backend.servicemonitor.androidproductions.com",
                 ownerName = "backend.servicemonitor.androidproductions.com",
@@ -70,7 +70,8 @@ public class ServiceStateEndpoint {
 
         ServiceRecord record = findRecord(srvId, srvGroup);
         record.setStatus(rec.getStatus());
-        record.setClaimant(rec.getClaimant());
+        if (rec.getClaimant() != null)
+            record.setClaimant(rec.getClaimant());
         ofy().save().entity(record).now();
 
         if (record.getStatus() >= AlertLevel && !record.isAlerted())
@@ -81,6 +82,7 @@ public class ServiceStateEndpoint {
         else if (record.isAlerted() && record.getStatus() < AlertLevel)
         {
             SendAlert(record);
+            record.setClaimant(null);
             record.setAlerted(false);
         }
         ofy().save().entity(record).now();
@@ -132,6 +134,20 @@ public class ServiceStateEndpoint {
         List<ServiceRecord> records = ofy().transactionless().load().type(ServiceRecord.class)
                 .filter("serviceGroup", serviceGroup).list();
         return CollectionResponse.<ServiceRecord>builder().setItems(records).build();
+    }
+
+    /**
+     * Return a collection of registered services
+     *
+     * @param serviceGroup The group of services to list
+     * @return a list of services
+     */
+    @ApiMethod(name = "get", httpMethod = "GET", path = "services/{serviceGroup}/{serviceId}")
+    public ServiceRecord getService(@Named("serviceGroup") String serviceGroup,@Named("serviceId") String serviceId, User user) throws OAuthRequestException {
+        if (user == null)
+            throw new OAuthRequestException("User unauthorized");
+
+        return findRecord(serviceId,serviceGroup);
     }
 
     private ServiceRecord findRecord(String serviceId, String serviceGroup) {

@@ -21,6 +21,7 @@ import com.androidproductions.servicemonitor.app.data.ServiceStateHelper;
 import com.androidproductions.servicemonitor.app.data.ServiceStatus;
 
 import java.util.Date;
+import java.util.concurrent.Callable;
 
 /**
  * A simple {@link android.app.Fragment} subclass.
@@ -36,6 +37,8 @@ public class ServiceDetailsFragment extends DialogFragment {
     private long _id;
     private ServiceStatus _data;
     private String _name;
+    private Button claimView;
+    private Button updateView;
 
     /**
      * Use this factory method to create a new instance of
@@ -66,7 +69,8 @@ public class ServiceDetailsFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.service_details, container, false);
-        view.findViewById(R.id.claimIssue).setOnClickListener(
+        claimView = (Button) view.findViewById(R.id.claimIssue);
+        claimView.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -74,7 +78,8 @@ public class ServiceDetailsFragment extends DialogFragment {
                     }
                 }
         );
-        view.findViewById(R.id.updateStatus).setOnClickListener(
+        updateView = (Button) view.findViewById(R.id.updateStatus);
+        updateView.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -135,17 +140,31 @@ public class ServiceDetailsFragment extends DialogFragment {
 
     private void updateStatus()
     {
+        updateView.setText(R.string.updating);
+        updateView.setEnabled(false);
+        ServiceStateHelper.refreshServiceState(getActivity(), _data.getId(), new Callable<Void>() {
 
+            @Override
+            public Void call() throws Exception {
+                _data = ServiceStateHelper.getServiceStatus(getActivity(),_id);
+                refreshView(getView());
+                updateView.setText(R.string.updateStatus);
+                updateView.setEnabled(true);
+                return null;
+            }
+        });
     }
 
     private void claimIssue()
     {
+        claimView.setText(R.string.releaseIssue);
         ServiceStateHelper.claimServiceState(getActivity(),_data.getId());
     }
 
     private void releaseIssue()
     {
-
+        claimView.setText(R.string.claimIssue);
+        ServiceStateHelper.releaseServiceState(getActivity(), _data.getId());
     }
 
     @Override

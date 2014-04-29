@@ -77,7 +77,6 @@ public class ServiceStatusProvider extends ContentProvider
                         c.getLong(c.getColumnIndex(ServiceStatusContract._ID)));
             long id = db.insertWithOnConflict(findTableName(uri), "", contentValues,
                     SQLiteDatabase.CONFLICT_REPLACE);
-            db.close();
             Uri itemUri = ContentUris.withAppendedId(uri,id);
             getContext().getContentResolver().notifyChange(itemUri, null);
             return itemUri;
@@ -88,7 +87,6 @@ public class ServiceStatusProvider extends ContentProvider
         final SQLiteDatabase db = mServiceStatusDb.getWritableDatabase();
         if (db != null) {
             int affectedRows = db.delete(findTableName(uri),selection,selectionArgs);
-            db.close();
             return affectedRows;
         }
         return 0;
@@ -98,7 +96,6 @@ public class ServiceStatusProvider extends ContentProvider
         final SQLiteDatabase db = mServiceStatusDb.getWritableDatabase();
         if (db != null) {
             int affectedRows = db.update(findTableName(uri),contentValues,selection,selectionArgs);
-            db.close();
             return affectedRows;
         }
         return 0;
