@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.androidproductions.generic.lib.auth.GoogleCredentials;
 import com.androidproductions.servicemonitor.app.MainActivity;
 import com.androidproductions.servicemonitor.backend.registration.Registration;
+import com.androidproductions.servicemonitor.backend.registration.model.RegistrationRecord;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
@@ -25,7 +26,9 @@ public class GCMUtils extends com.androidproductions.generic.lib.gcm.GCMUtils {
                 GoogleCredentials.Instance.getAccount());
         Registration service = builder.build();
         try {
-            service.register(regId).execute();
+            RegistrationRecord rec = new RegistrationRecord();
+            rec.setRegId(regId);
+            service.register(rec).execute();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -40,13 +40,23 @@
         android:singleLine="true"
         android:layout_below="@id/divider"/>
     <TextView
+        android:id="@+id/service_claimant"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="18sp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:layout_below="@id/service_group"
+        android:visibility="gone"/>
+    <TextView
         android:id="@+id/service_update"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="5dip"
         android:textSize="14sp"
         android:textColor="?android:textColorSecondary"
-        android:layout_below="@id/service_group"/>
+        android:layout_below="@id/service_claimant"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

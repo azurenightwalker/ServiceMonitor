@@ -1,6 +1,5 @@
-package com.androidproductions.servicemonitor.app.data;
+package com.androidproductions.servicemonitor.app.data.servicegroups;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.view.LayoutInflater;
@@ -13,13 +12,14 @@ import android.widget.TextView;
 
 import com.androidproductions.generic.lib.dates.DateFormatter;
 import com.androidproductions.servicemonitor.app.R;
-import com.androidproductions.servicemonitor.app.fragments.ServiceDetailsFragment;
+import com.androidproductions.servicemonitor.app.data.services.ServiceState;
+import com.androidproductions.servicemonitor.app.data.services.ServiceStatusContract;
 
 import java.util.Date;
 
-public class ServiceStatusAdapter extends CursorAdapter {
+public class ServiceGroupAdapter extends CursorAdapter {
 
-    public ServiceStatusAdapter(final Context context) {
+    public ServiceGroupAdapter(final Context context) {
         super(context,null,0);
     }
 

@@ -9,10 +9,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.text.TextUtils;
 
-public class ServiceStatusProvider extends ContentProvider
+import com.androidproductions.servicemonitor.app.data.servicegroups.ServiceGroupContract;
+import com.androidproductions.servicemonitor.app.data.services.ServiceStatusContract;
+
+public class ServicesProvider extends ContentProvider
 {
     private static final int SERVICE = 0;
     private static final int SERVICE_ID = 1;
+    private static final int SERVICE_GROUP = 2;
+    private static final int SERVICE_GROUP_ID = 3;
 
     private static final String PROVIDER_NAME =
             "com.androidproductions.servicemonitor";
@@ -20,12 +25,14 @@ public class ServiceStatusProvider extends ContentProvider
     static {
         uriMatcher.addURI(PROVIDER_NAME, "services", SERVICE);
         uriMatcher.addURI(PROVIDER_NAME, "services/#", SERVICE_ID);
+        uriMatcher.addURI(PROVIDER_NAME, "servicegroups", SERVICE_GROUP);
+        uriMatcher.addURI(PROVIDER_NAME, "servicegroups/#", SERVICE_GROUP_ID);
     }
 
-    private ServiceStatusDb mServiceStatusDb;
+    private ServicesDb mServicesDb;
 
     public boolean onCreate() {
-        mServiceStatusDb = new ServiceStatusDb(getContext());
+        mServicesDb = new ServicesDb(getContext());
         return true;
     }
 
@@ -43,10 +50,17 @@ public class ServiceStatusProvider extends ContentProvider
                 selection = (selection == null ? "" : (selection + " ")) +
                         ServiceStatusContract._ID + " = " + uri.getLastPathSegment();
                 break;
+            case SERVICE_GROUP:
+                if (TextUtils.isEmpty(sortOrder)) sortOrder = "_ID ASC";
+                break;
+            case SERVICE_GROUP_ID:
+                selection = (selection == null ? "" : (selection + " ")) +
+                        ServiceGroupContract._ID + " = " + uri.getLastPathSegment();
+                break;
             default:
                 return null;
         }
-        final SQLiteDatabase db = mServiceStatusDb.getReadableDatabase();
+        final SQLiteDatabase db = mServicesDb.getReadableDatabase();
         if (db != null) {
             Cursor c = db.query(findTableName(uri), projection, selection, selectionArgs, null, null, sortOrder);
             c.setNotificationUri(getContext().getContentResolver(), uri);
@@ -62,13 +76,17 @@ public class ServiceStatusProvider extends ContentProvider
                 return "vnd.android.cursor.dir/vnd.com.androidproductions.servicemonitor.service";
             case SERVICE_ID:
                 return "vnd.android.cursor.item/vnd.com.androidproductions.servicemonitor.service";
+            case SERVICE_GROUP:
+                return "vnd.android.cursor.dir/vnd.com.androidproductions.servicemonitor.servicegroup";
+            case SERVICE_GROUP_ID:
+                return "vnd.android.cursor.item/vnd.com.androidproductions.servicemonitor.servicegroup";
             default:
                 return null;
         }
     }
 
     public Uri insert(Uri uri, ContentValues contentValues) {
-        final SQLiteDatabase db = mServiceStatusDb.getWritableDatabase();
+        final SQLiteDatabase db = mServicesDb.getWritableDatabase();
         if (db != null) {
             Cursor c = query(uri,null,ServiceStatusContract.NAME + " = ?",
                     new String[] {contentValues.getAsString(ServiceStatusContract.NAME)},null);
@@ -84,19 +102,17 @@ public class ServiceStatusProvider extends ContentProvider
         return null;
     }
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        final SQLiteDatabase db = mServiceStatusDb.getWritableDatabase();
+        final SQLiteDatabase db = mServicesDb.getWritableDatabase();
         if (db != null) {
-            int affectedRows = db.delete(findTableName(uri),selection,selectionArgs);
-            return affectedRows;
+            return db.delete(findTableName(uri),selection,selectionArgs);
         }
         return 0;
     }
 
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
-        final SQLiteDatabase db = mServiceStatusDb.getWritableDatabase();
+        final SQLiteDatabase db = mServicesDb.getWritableDatabase();
         if (db != null) {
-            int affectedRows = db.update(findTableName(uri),contentValues,selection,selectionArgs);
-            return affectedRows;
+            return db.update(findTableName(uri),contentValues,selection,selectionArgs);
         }
         return 0;
     }
@@ -106,9 +122,13 @@ public class ServiceStatusProvider extends ContentProvider
         switch(uriMatcher.match(uri))
         {
             case SERVICE:
-                return ServiceStatusDb.TABLE_STATUSES;
+                return ServicesDb.TABLE_STATUSES;
             case SERVICE_ID:
-                return ServiceStatusDb.TABLE_STATUSES;
+                return ServicesDb.TABLE_STATUSES;
+            case SERVICE_GROUP:
+                return ServicesDb.TABLE_GROUPS;
+            case SERVICE_GROUP_ID:
+                return ServicesDb.TABLE_GROUPS;
             default:
                 return null;
         }
@@ -122,6 +142,10 @@ public class ServiceStatusProvider extends ContentProvider
                 return ServiceStatusContract.PROJECTION;
             case SERVICE_ID:
                 return ServiceStatusContract.PROJECTION;
+            case SERVICE_GROUP:
+                return ServiceGroupContract.PROJECTION;
+            case SERVICE_GROUP_ID:
+                return ServiceGroupContract.PROJECTION;
             default:
                 return null;
         }

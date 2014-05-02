@@ -1,4 +1,4 @@
-package com.androidproductions.servicemonitor.app.data;
+package com.androidproductions.servicemonitor.app.data.services;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -13,7 +13,6 @@ import com.androidproductions.servicemonitor.backend.services.model.CollectionRe
 import com.androidproductions.servicemonitor.backend.services.model.ServiceRecord;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
@@ -167,6 +166,7 @@ public final class ServiceStateHelper {
         cv.put(ServiceStatusContract.GROUP, msg.getServiceGroup());
         cv.put(ServiceStatusContract.STATUS, msg.getStatus());
         cv.put(ServiceStatusContract.LAST_UPDATE, msg.getLastUpdate());
+        cv.put(ServiceStatusContract.CLAIMANT, msg.getClaimant());
         return cv;
     }
 
@@ -177,6 +177,7 @@ public final class ServiceStateHelper {
         cv.put(ServiceStatusContract.GROUP, srv.getServiceGroup());
         cv.put(ServiceStatusContract.STATUS, srv.getStatus());
         cv.put(ServiceStatusContract.LAST_UPDATE, srv.getLastUpdate());
+        cv.put(ServiceStatusContract.CLAIMANT, srv.getClaimant());
         return cv;
     }
 }

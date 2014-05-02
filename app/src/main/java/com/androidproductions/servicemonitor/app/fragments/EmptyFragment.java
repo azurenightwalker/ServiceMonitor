@@ -2,23 +2,12 @@ package com.androidproductions.servicemonitor.app.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ContentValues;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.androidproductions.servicemonitor.app.R;
-import com.androidproductions.servicemonitor.app.data.ServiceStatusContract;
-import com.androidproductions.servicemonitor.backend.services.Services;
-import com.androidproductions.servicemonitor.backend.services.model.CollectionResponseServiceRecord;
-import com.androidproductions.servicemonitor.backend.services.model.ServiceRecord;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-
-import java.io.IOException;
 
 /**
  * A simple {@link android.app.Fragment} subclass.

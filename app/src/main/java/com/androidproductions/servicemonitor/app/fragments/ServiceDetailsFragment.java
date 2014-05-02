@@ -3,7 +3,6 @@ package com.androidproductions.servicemonitor.app.fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,11 +13,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidproductions.generic.lib.auth.GoogleCredentials;
 import com.androidproductions.generic.lib.dates.DateFormatter;
 import com.androidproductions.servicemonitor.app.R;
-import com.androidproductions.servicemonitor.app.data.ServiceState;
-import com.androidproductions.servicemonitor.app.data.ServiceStateHelper;
-import com.androidproductions.servicemonitor.app.data.ServiceStatus;
+import com.androidproductions.servicemonitor.app.data.services.ServiceState;
+import com.androidproductions.servicemonitor.app.data.services.ServiceStateHelper;
+import com.androidproductions.servicemonitor.app.data.services.ServiceStatus;
 
 import java.util.Date;
 import java.util.concurrent.Callable;
@@ -120,13 +120,46 @@ public class ServiceDetailsFragment extends DialogFragment {
     {
         ((TextView)view.findViewById(R.id.service_name)).setText(_data.getName());
         ((TextView)view.findViewById(R.id.service_group)).setText(_data.getGroup());
+        TextView tv = (TextView) view.findViewById(R.id.service_claimant);
+        if (_data.getClaimant() != null) {
+            tv.setText(_data.getClaimant());
+            tv.setVisibility(View.VISIBLE);
+        }
+        else
+            tv.setVisibility(View.GONE);
         ((TextView)view.findViewById(R.id.service_update)).setText(
                 DateFormatter.AsCuiDateTime(new Date(_data.getLastUpdate())));
         ((ImageView) view.findViewById(R.id.service_status))
                 .setImageResource(_data.getStatus().getResource());
 
-        if (_data.getStatus() == ServiceState.DOWN)
-            view.findViewById(R.id.claimIssue).setEnabled(true);
+        if (_data.getStatus() == ServiceState.DOWN) {
+            if (_data.getClaimant().equals(GoogleCredentials.Instance.getAccount().getSelectedAccountName())) {
+                claimView.setText(R.string.releaseIssue);
+                claimView.setOnClickListener(
+                    new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                releaseIssue();
+                            }
+                        }
+                );
+            }
+            else {
+                claimView.setText(R.string.claimIssue);
+                claimView.setOnClickListener(
+                    new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                claimIssue();
+                            }
+                        }
+                );
+            }
+            claimView.setEnabled(true);
+            claimView.setVisibility(View.VISIBLE);
+        }
+        else
+            claimView.setVisibility(View.GONE);
     }
 
     @Override

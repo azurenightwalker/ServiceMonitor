@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.androidproductions.generic.lib.auth.GoogleCredentials;
 import com.androidproductions.generic.lib.drawer.DrawerActivity;
 import com.androidproductions.generic.lib.drawer.MenuOption;
-import com.androidproductions.servicemonitor.app.data.ServiceStateHelper;
+import com.androidproductions.servicemonitor.app.data.services.ServiceStateHelper;
 import com.androidproductions.servicemonitor.app.fragments.*;
 import com.androidproductions.servicemonitor.app.gcm.GCMUtils;
 
@@ -19,10 +19,16 @@ public class MainActivity extends DrawerActivity implements OnFragmentInteractio
         super(R.layout.activity_main, R.id.drawer_layout, R.id.leftList,
                 R.string.app_name, R.id.conversation_detail_container,
                 new MenuOption[]{
-                        new MenuOption(R.string.app_name, R.drawable.ic_launcher, new Callable<Fragment>() {
+                        new MenuOption(R.string.monitor, R.drawable.ic_launcher, new Callable<Fragment>() {
                             @Override
                             public Fragment call() throws Exception {
-                                return ServiceListFragment.newInstance();
+                                return MonitorFragment.newInstance();
+                            }
+                        }),
+                        new MenuOption(R.string.serviceGroups, R.drawable.ic_launcher, new Callable<Fragment>() {
+                            @Override
+                            public Fragment call() throws Exception {
+                                return MonitorFragment.newInstance();
                             }
                         })
                 }

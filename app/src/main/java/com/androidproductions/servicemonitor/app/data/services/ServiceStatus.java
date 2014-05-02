@@ -1,4 +1,4 @@
-package com.androidproductions.servicemonitor.app.data;
+package com.androidproductions.servicemonitor.app.data.services;
 
 
 import android.database.Cursor;
@@ -7,6 +7,7 @@ public class ServiceStatus {
     private final long Id;
     private final String Name;
     private final String Group;
+    private final String Claimant;
     private final long LastUpdate;
 
     public ServiceState getStatus() {
@@ -37,5 +38,10 @@ public class ServiceStatus {
         LastUpdate = query.getLong(query.getColumnIndex(ServiceStatusContract.LAST_UPDATE));
         Status = ServiceState.parse(query.getInt(query.getColumnIndex(ServiceStatusContract.STATUS)));
         Id = query.getLong(query.getColumnIndex(ServiceStatusContract._ID));
+        Claimant = query.getString(query.getColumnIndex(ServiceStatusContract.CLAIMANT));
+    }
+
+    public String getClaimant() {
+        return Claimant;
     }
 }

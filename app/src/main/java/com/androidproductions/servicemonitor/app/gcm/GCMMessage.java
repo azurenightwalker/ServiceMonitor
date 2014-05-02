@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.androidproductions.generic.lib.dates.DateFormatter;
 import com.androidproductions.servicemonitor.app.R;
-import com.androidproductions.servicemonitor.app.data.ServiceState;
+import com.androidproductions.servicemonitor.app.data.services.ServiceState;
 
 import java.util.Date;
 import java.util.Locale;
@@ -14,12 +14,17 @@ public class GCMMessage {
 
     final String serviceId;
     final String serviceGroup;
+    final String claimant;
     final int status;
     final long time;
     private final Context _context;
 
     public String getServiceId() {
         return serviceId;
+    }
+
+    public String getClaimant() {
+        return claimant;
     }
 
     public String getServiceGroup() {
@@ -40,6 +45,8 @@ public class GCMMessage {
         status = Integer.parseInt(extras.getString("status"));
         time = Long.parseLong(extras.getString("time"));
         _context = context;
+        // TODO: This needs fixing if we are going to notify on claim
+        claimant = null;
     }
 
     @Override

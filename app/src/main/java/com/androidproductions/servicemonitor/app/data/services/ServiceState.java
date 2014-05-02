@@ -1,4 +1,4 @@
-package com.androidproductions.servicemonitor.app.data;
+package com.androidproductions.servicemonitor.app.data.services;
 
 public enum ServiceState {
     UNKNOWN(0),

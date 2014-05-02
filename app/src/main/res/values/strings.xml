@@ -14,5 +14,7 @@
     <string name="claimIssue">Claim Issue</string>
     <string name="notificationHeader">%1$s is %2$s</string>
     <string name="releaseIssue">Release issue</string>
+    <string name="monitor">Monitor</string>
+    <string name="serviceGroups">Service Groups</string>
 
 </resources>

@@ -11,8 +11,8 @@ import android.util.Log;
 
 import com.androidproductions.servicemonitor.app.DetailsActivity;
 import com.androidproductions.servicemonitor.app.R;
-import com.androidproductions.servicemonitor.app.data.ServiceState;
-import com.androidproductions.servicemonitor.app.data.ServiceStateHelper;
+import com.androidproductions.servicemonitor.app.data.services.ServiceState;
+import com.androidproductions.servicemonitor.app.data.services.ServiceStateHelper;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class GcmIntentService extends IntentService {
