@@ -1,4 +1,4 @@
-package com.androidproductions.servicemonitor.backend;
+package com.androidproductions.servicemonitor.backend.data.models;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;

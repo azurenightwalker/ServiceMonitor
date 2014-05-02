@@ -1,4 +1,4 @@
-package com.androidproductions.servicemonitor.backend;
+package com.androidproductions.servicemonitor.backend.data.models;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -13,6 +13,10 @@ public class RegistrationRecord {
 
     @Index
     private String regId;
+
+    public RegistrationRecord(String regId) {
+        this.regId = regId;
+    }
     // you can add more fields...
 
     public String getUser() {
@@ -33,5 +37,9 @@ public class RegistrationRecord {
 
     public void setRegId(String regId) {
         this.regId = regId;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

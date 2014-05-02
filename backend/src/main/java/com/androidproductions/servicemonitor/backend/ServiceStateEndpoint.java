@@ -1,5 +1,9 @@
 package com.androidproductions.servicemonitor.backend;
 
+import com.androidproductions.servicemonitor.backend.data.ServiceGroups;
+import com.androidproductions.servicemonitor.backend.data.Services;
+import com.androidproductions.servicemonitor.backend.data.models.ServiceGroupRecord;
+import com.androidproductions.servicemonitor.backend.data.models.ServiceRecord;
 import com.google.android.gcm.server.Message;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -9,15 +13,12 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
 
-import static com.androidproductions.servicemonitor.backend.OfyService.ofy;
-
 @Api(name = "services",
-        version = "v1.4",
+        version = "v1.7",
         namespace = @ApiNamespace(
                 ownerDomain = "backend.servicemonitor.androidproductions.com",
                 ownerName = "backend.servicemonitor.androidproductions.com",
@@ -36,20 +37,107 @@ public class ServiceStateEndpoint {
 
     private static final int AlertLevel = 1<<2;
 
+    // Service Groups
+
+    /**
+     * Register a service group to the backend
+     *
+     * @param rec The Service group to add
+     */
+    @ApiMethod(name = "registerServiceGroup", path = "services", httpMethod = "POST")
+    public ServiceGroupRecord registerServiceGroup(ServiceGroupRecord rec, User user) throws OAuthRequestException {
+        if (user == null)
+            throw new OAuthRequestException("User unauthorized");
+
+        return ServiceGroups.create(rec);
+    }
+
+    /**
+     * Return a collection of registered service groups
+     *
+     * @return a list of service groups
+     */
+    @ApiMethod(name = "listServiceGroups", httpMethod = "GET", path = "services")
+    public CollectionResponse<ServiceGroupRecord> listServiceGroups(User user) throws OAuthRequestException {
+        if (user == null)
+            throw new OAuthRequestException("User unauthorized");
+
+        return CollectionResponse.<ServiceGroupRecord>builder()
+                .setItems(ServiceGroups.search()).build();
+    }
+
+    /**
+     * Update a service group in the backend
+     *
+     * @param group The Service group to update
+     * @param rec The updated group
+     */
+    @ApiMethod(name = "updateServiceGroup", path = "services/{group}", httpMethod = "PUT")
+    public void updateServiceGroup(@Named("group") String group, ServiceGroupRecord rec, User user) throws OAuthRequestException {
+        if (user == null)
+            throw new OAuthRequestException("User unauthorized");
+
+        // TODO: Implement
+    }
+
+    /**
+     * Delete a service group from the backend
+     *
+     * @param group The Service group to delete
+     */
+    @ApiMethod(name = "deleteServiceGroup", path = "services/{group}", httpMethod = "DELETE")
+    public void deleteServiceGroup(@Named("group") String group, User user) throws OAuthRequestException {
+        if (user == null)
+            throw new OAuthRequestException("User unauthorized");
+
+        // TODO: Implement
+    }
+
+    // Services
+
     /**
      * Register a service to the backend
      *
      * @param rec The Service to add
      */
-    @ApiMethod(name = "register", path = "services/{group}", httpMethod = "POST")
-    public void registerService(@Named("group") String group, ServiceRecord rec, User user) throws OAuthRequestException {
+    @ApiMethod(name = "registerService", path = "services/{group}", httpMethod = "POST")
+    public ServiceRecord registerService(@Named("group") String group, ServiceRecord rec, User user) throws OAuthRequestException {
         if (user == null)
             throw new OAuthRequestException("User unauthorized");
-        if(findRecord(rec.getServiceId(), group) != null) {
-            log.info("Service " + rec.getServiceId() + " already registered, skipping register");
-            return;
-        }
-        ofy().save().entity(rec).now();
+
+        rec.setServiceGroup(group);
+
+        return Services.create(rec);
+    }
+
+    /**
+     * Return a collection of registered services
+     *
+     * @param serviceGroup The group of services to list
+     * @return a list of services
+     */
+    @ApiMethod(name = "listServices", httpMethod = "GET", path = "services/{serviceGroup}")
+    public CollectionResponse<ServiceRecord> listServices(@Named("serviceGroup") String serviceGroup, User user) throws OAuthRequestException {
+        if (user == null)
+            throw new OAuthRequestException("User unauthorized");
+
+        return CollectionResponse.<ServiceRecord>builder()
+                .setItems(Services.search(serviceGroup)).build();
+    }
+
+    /**
+     * Return a single service
+     *
+     * @param serviceGroup The group of services to look in
+     * @param serviceId The name of the service
+     * @return a service record
+     */
+    @ApiMethod(name = "get", httpMethod = "GET", path = "services/{serviceGroup}/{serviceId}")
+    public ServiceRecord getService(@Named("serviceGroup") String serviceGroup,@Named("serviceId") String serviceId, User user) throws OAuthRequestException {
+        if (user == null)
+            throw new OAuthRequestException("User unauthorized");
+
+        return Services.find(serviceId, serviceGroup);
     }
 
     /**
@@ -59,20 +147,11 @@ public class ServiceStateEndpoint {
      * @param rec The new service record
      */
     @ApiMethod(name = "update", path = "services/{srvGroup}/{srvId}", httpMethod = "PUT")
-    public void updateService(@Named("srvId") String srvId, @Named("srvGroup") String srvGroup, ServiceRecord rec, User user) throws OAuthRequestException {
+    public ServiceRecord updateService(@Named("srvId") String srvId, @Named("srvGroup") String srvGroup, ServiceRecord rec, User user) throws OAuthRequestException {
         if (user == null)
             throw new OAuthRequestException("User unauthorized");
 
-        if(findRecord(srvId,srvGroup) == null) {
-            log.info("Service " + srvId + " not registered, skipping update");
-            return;
-        }
-
-        ServiceRecord record = findRecord(srvId, srvGroup);
-        record.setStatus(rec.getStatus());
-        if (rec.getClaimant() != null)
-            record.setClaimant(rec.getClaimant());
-        ofy().save().entity(record).now();
+        ServiceRecord record = Services.update(srvId,srvGroup,rec);
 
         if (record.getStatus() >= AlertLevel && !record.isAlerted())
         {
@@ -85,9 +164,27 @@ public class ServiceStateEndpoint {
             record.setClaimant(null);
             record.setAlerted(false);
         }
-        ofy().save().entity(record).now();
+
+        Services.update(srvId, srvGroup, record);
+
+        return record;
     }
 
+    /**
+     * Unregister a service from the backend
+     *
+     * @param serviceId The service Id to remove
+     */
+    @ApiMethod(name = "unregister", httpMethod = "DELETE", path = "services/{serviceGroup}/{serviceId}")
+    public void unregisterService(@Named("serviceGroup") String serviceGroup, @Named("serviceId") String serviceId, User user) throws OAuthRequestException {
+        if (user == null)
+            throw new OAuthRequestException("User unauthorized");
+
+        Services.delete(serviceId, serviceGroup);
+    }
+
+
+    // Misc
     private void SendAlert(ServiceRecord record) {
         Message.Builder builder = new Message.Builder();
         builder.addData("serviceId", record.getServiceId());
@@ -101,60 +198,4 @@ public class ServiceStateEndpoint {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Unregister a service from the backend
-     *
-     * @param serviceId The service Id to remove
-     */
-    @ApiMethod(name = "unregister", httpMethod = "DELETE", path = "services/{serviceGroup}/{serviceId}")
-    public void unregisterService(@Named("serviceGroup") String serviceGroup, @Named("serviceId") String serviceId, User user) throws OAuthRequestException {
-        if (user == null)
-            throw new OAuthRequestException("User unauthorized");
-
-        ServiceRecord record = findRecord(serviceId,serviceGroup);
-        if(record == null) {
-            log.info("Service " + serviceId + " not registered, skipping unregister");
-            return;
-        }
-        ofy().delete().entity(record).now();
-    }
-
-    /**
-     * Return a collection of registered services
-     *
-     * @param serviceGroup The group of services to list
-     * @return a list of services
-     */
-    @ApiMethod(name = "listServices")
-    public CollectionResponse<ServiceRecord> listServices(@Named("serviceGroup") String serviceGroup, User user) throws OAuthRequestException {
-        if (user == null)
-            throw new OAuthRequestException("User unauthorized");
-
-        List<ServiceRecord> records = ofy().transactionless().load().type(ServiceRecord.class)
-                .filter("serviceGroup", serviceGroup).list();
-        return CollectionResponse.<ServiceRecord>builder().setItems(records).build();
-    }
-
-    /**
-     * Return a collection of registered services
-     *
-     * @param serviceGroup The group of services to list
-     * @return a list of services
-     */
-    @ApiMethod(name = "get", httpMethod = "GET", path = "services/{serviceGroup}/{serviceId}")
-    public ServiceRecord getService(@Named("serviceGroup") String serviceGroup,@Named("serviceId") String serviceId, User user) throws OAuthRequestException {
-        if (user == null)
-            throw new OAuthRequestException("User unauthorized");
-
-        return findRecord(serviceId,serviceGroup);
-    }
-
-    private ServiceRecord findRecord(String serviceId, String serviceGroup) {
-        return ofy().load().type(ServiceRecord.class)
-                .filter("serviceId", serviceId)
-                .filter("serviceGroup", serviceGroup)
-                .first().now();
-    }
-
 }

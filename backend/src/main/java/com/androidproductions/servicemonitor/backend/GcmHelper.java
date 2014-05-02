@@ -1,5 +1,6 @@
 package com.androidproductions.servicemonitor.backend;
 
+import com.androidproductions.servicemonitor.backend.data.models.RegistrationRecord;
 import com.google.android.gcm.server.Constants;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;
@@ -9,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static com.androidproductions.servicemonitor.backend.OfyService.ofy;
+import static com.androidproductions.servicemonitor.backend.data.OfyService.ofy;
 
 public class GcmHelper {
     private static final Logger log = Logger.getLogger(MessagingEndpoint.class.getName());
