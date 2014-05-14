@@ -16,10 +16,31 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+    lintOptions {
+        // set to true to turn off analysis progress reporting by lint
+        quiet true
+        // if true, stop the gradle build if errors are found
+        abortOnError false
+        // if true, check all issues, including those that are off by default
+        checkAllWarnings true
+        // if true, show all locations for an error, do not truncate lists, etc.
+        showAll true
+        // if true, generate a text report of issues (false by default)
+        textReport false
+        // if true, generate an XML report for use by for example Jenkins
+        xmlReport false
+        // if true, generate an HTML report (with issue explanations, sourcecode, etc)
+        htmlReport true
+        // set to true to have all release builds run lint on issues with severity=fatal
+        // and abort the build (controlled by abortOnError above) if fatal issues are found
+        checkReleaseBuilds true
+        lintConfig file("..\\lint.xml")
+    }
 }
 
 dependencies {
     compile ([group: 'com.google.api-client', name: 'google-api-client-android', version: '1.18.0-rc'])
-    compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.android.support:support-v13:19.1.0'
     compile 'com.google.android.gms:play-services:4.3.23'
 }
