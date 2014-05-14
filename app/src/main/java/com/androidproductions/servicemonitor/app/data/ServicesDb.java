@@ -34,6 +34,7 @@ public class ServicesDb extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(DATABASE_CREATE_STATUSES);
+        sqLiteDatabase.execSQL(DATABASE_CREATE_GROUPS);
     }
 
     @Override

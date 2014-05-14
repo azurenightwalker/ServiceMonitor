@@ -87,6 +87,6 @@ public class ServiceGroupListFragment extends ListFragment implements LoaderMana
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        ServiceDetailsFragment.newInstance(id).show(getFragmentManager(), "Dialog");
+
     }
 }

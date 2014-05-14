@@ -9,12 +9,6 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <ImageView
-        android:id="@+id/service_status"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:src="@android:drawable/presence_invisible"
-        android:contentDescription="@string/statusIndicator"/>
     <TextView
         android:id="@+id/service_name"
         android:layout_width="wrap_content"
@@ -22,7 +16,11 @@
         android:textColor="?android:textColorPrimary"
         android:textSize="18sp"
         android:ellipsize="end"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:drawableLeft="@android:drawable/presence_invisible"
+        android:drawableStart="@android:drawable/presence_invisible"
+        android:drawablePadding="@dimen/list_horizontal_margin"
+        />
     </LinearLayout>
     <View
         android:id="@+id/divider"
@@ -60,12 +58,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="?android:attr/buttonBarStyle"
         android:layout_below="@id/service_update">
         <Button
             android:id="@+id/updateStatus"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
+            style="?android:attr/buttonBarButtonStyle"
             android:text="@string/updateStatus"/>
         <Button
             android:id="@+id/claimIssue"
@@ -73,6 +73,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:text="@string/claimIssue"
+            style="?android:attr/buttonBarButtonStyle"
             android:enabled="false"/>
     </LinearLayout>
 </RelativeLayout>

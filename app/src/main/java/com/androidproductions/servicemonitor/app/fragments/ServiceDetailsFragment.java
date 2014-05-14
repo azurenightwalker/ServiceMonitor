@@ -118,7 +118,8 @@ public class ServiceDetailsFragment extends DialogFragment {
 
     private void refreshView(View view)
     {
-        ((TextView)view.findViewById(R.id.service_name)).setText(_data.getName());
+        TextView sName = (TextView)view.findViewById(R.id.service_name);
+        sName.setText(_data.getName());
         ((TextView)view.findViewById(R.id.service_group)).setText(_data.getGroup());
         TextView tv = (TextView) view.findViewById(R.id.service_claimant);
         if (_data.getClaimant() != null) {
@@ -129,11 +130,11 @@ public class ServiceDetailsFragment extends DialogFragment {
             tv.setVisibility(View.GONE);
         ((TextView)view.findViewById(R.id.service_update)).setText(
                 DateFormatter.AsCuiDateTime(new Date(_data.getLastUpdate())));
-        ((ImageView) view.findViewById(R.id.service_status))
-                .setImageResource(_data.getStatus().getResource());
+        sName.setCompoundDrawablesWithIntrinsicBounds(
+                getResources().getDrawable(_data.getStatus().getResource()), null, null, null);
 
         if (_data.getStatus() == ServiceState.DOWN) {
-            if (_data.getClaimant().equals(GoogleCredentials.Instance.getAccount().getSelectedAccountName())) {
+            if (_data.getClaimant() != null && _data.getClaimant().equals(GoogleCredentials.Instance.getAccount().getSelectedAccountName())) {
                 claimView.setText(R.string.releaseIssue);
                 claimView.setOnClickListener(
                     new View.OnClickListener() {

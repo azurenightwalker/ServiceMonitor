@@ -133,7 +133,7 @@ public final class ServiceStateHelper {
                 try {
                     ServiceStatus ss = getServiceStatus(context, id);
                     ServiceRecord sr = new ServiceRecord();
-                    sr.setClaimant(null);
+                    sr.setClaimant("");
                     sr.setStatus(ss.getStatus().Value);
                     sr.setAlerted(true);
                     builder.build().update(ss.getGroup(), ss.getName(),sr).execute();

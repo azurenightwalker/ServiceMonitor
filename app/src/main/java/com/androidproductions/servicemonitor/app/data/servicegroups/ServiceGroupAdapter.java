@@ -31,9 +31,7 @@ public class ServiceGroupAdapter extends CursorAdapter {
         {
             ret.setTag(
                     new ViewHolder(
-                            (TextView)ret.findViewById(R.id.service_name),
-                            (TextView)ret.findViewById(R.id.service_update),
-                            (ImageView)ret.findViewById(R.id.service_status)
+                        (TextView)ret.findViewById(R.id.service_name)
                     ));
             return populateView(cursor, ret);
         }
@@ -49,30 +47,16 @@ public class ServiceGroupAdapter extends CursorAdapter {
         ViewHolder vh = (ViewHolder) ret.getTag();
 
         final String name = cursor.getString(
-                cursor.getColumnIndexOrThrow(ServiceStatusContract.NAME));
-        final Date lastUpdate = new Date(cursor.getLong(
-                cursor.getColumnIndexOrThrow(ServiceStatusContract.LAST_UPDATE)));
-        final ServiceState status = ServiceState.parse(cursor.getInt(
-                cursor.getColumnIndexOrThrow(ServiceStatusContract.STATUS)));
-
+                cursor.getColumnIndexOrThrow(ServiceGroupContract.NAME));
         vh.Name.setText(name);
-        vh.LastUpdate.setText(DateFormatter.AsCuiDateTime(lastUpdate));
-
-        ((ImageView) vh.Status.findViewById(R.id.service_status))
-                .setImageResource(status.getResource());
         return ret;
     }
 
 
     private class ViewHolder {
         TextView Name;
-        TextView LastUpdate;
-        ImageView Status;
-
-        private ViewHolder(TextView name, TextView lastUpdate, ImageView status) {
+        private ViewHolder(TextView name) {
             Name = name;
-            LastUpdate = lastUpdate;
-            Status = status;
         }
     }
 }

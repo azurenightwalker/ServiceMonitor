@@ -9,6 +9,7 @@
         android:id="@+id/service_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:src="@android:drawable/presence_invisible"
@@ -17,6 +18,7 @@
         android:id="@+id/service_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/service_status"
         android:layout_toRightOf="@id/service_status"
         android:textColor="?android:textColorPrimary"
         android:textSize="18sp"
@@ -29,6 +31,8 @@
         android:paddingBottom="5dip"
         android:textSize="14sp"
         android:textColor="?android:textColorSecondary"
+        android:textIsSelectable="true"
+        android:layout_toEndOf="@id/service_status"
         android:layout_toRightOf="@id/service_status"
         android:layout_below="@id/service_name"/>
 </RelativeLayout>

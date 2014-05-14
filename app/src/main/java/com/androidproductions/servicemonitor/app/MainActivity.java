@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.androidproductions.generic.lib.auth.GoogleCredentials;
 import com.androidproductions.generic.lib.drawer.DrawerActivity;
 import com.androidproductions.generic.lib.drawer.MenuOption;
+import com.androidproductions.servicemonitor.app.data.servicegroups.ServiceGroupHelper;
 import com.androidproductions.servicemonitor.app.data.services.ServiceStateHelper;
 import com.androidproductions.servicemonitor.app.fragments.*;
 import com.androidproductions.servicemonitor.app.gcm.GCMUtils;
@@ -28,7 +29,7 @@ public class MainActivity extends DrawerActivity implements OnFragmentInteractio
                         new MenuOption(R.string.serviceGroups, R.drawable.ic_launcher, new Callable<Fragment>() {
                             @Override
                             public Fragment call() throws Exception {
-                                return MonitorFragment.newInstance();
+                                return ServiceGroupListFragment.newInstance();
                             }
                         })
                 }
@@ -69,6 +70,7 @@ public class MainActivity extends DrawerActivity implements OnFragmentInteractio
     private void InitializeConnections()
     {
         ServiceStateHelper.refreshServiceStates(this);
+        ServiceGroupHelper.refreshServiceGroups(this);
         GCMUtils gcm = new GCMUtils(this);
         gcm.Initialize();
     }
