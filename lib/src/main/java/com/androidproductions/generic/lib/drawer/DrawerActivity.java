@@ -96,7 +96,7 @@ public class DrawerActivity extends Activity {
     }
 
     protected void openDrawer() {
-        mDrawerLayout.openDrawer(Gravity.LEFT);
+        mDrawerLayout.openDrawer(Gravity.START);
         getActionBar().setTitle(mDrawerTitle);
     }
 
@@ -118,14 +118,15 @@ public class DrawerActivity extends Activity {
         if (fragment != null)
             transaction.remove(fragment);
         fragment = newFragment;
-        transaction.add(mFragmentLocation, fragment).commit();
+        transaction.add(mFragmentLocation, fragment,"FRAGMENT").commitAllowingStateLoss();
     }
 
     protected void removeFragment() {
         if (mDefaultFragment != null)
             switchFragment(mDefaultFragment);
         else {
-            getFragmentManager().beginTransaction().remove(fragment).commit();
+            if (fragment != null)
+                getFragmentManager().beginTransaction().remove(fragment).commitAllowingStateLoss();
             setTitle(mDrawerTitle);
         }
     }
@@ -138,7 +139,7 @@ public class DrawerActivity extends Activity {
     }
 
     /** Swaps fragments in the main content view */
-    private void selectItem(final int position) {
+    public void selectItem(final int position) {
         mDrawerList.setItemChecked(position, true);
         setTitle(mAdapter.getName(position));
         switchFragment(mAdapter.getFragment(position));
@@ -150,7 +151,7 @@ public class DrawerActivity extends Activity {
         {
             public void run()
             {
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                mDrawerLayout.closeDrawer(Gravity.START);
             }
         };
         Handler handler = new Handler();
